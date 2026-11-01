@@ -6,10 +6,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Bootstrap
-        run: ./scripts/run-docker.sh ./scripts/generate-bootstraps.sh --architectures aarch64
-      - name: Upload artifacts
+
+      - name: Build packages and bootstrap
+        run: |
+          ./scripts/run-docker.sh /bin/bash -c '
+            set -e
+            export TERMUX_APP_PACKAGE="com.bgflamer4ik.app.xconvergencelauncher"
+            ./build-package.sh -a aarch64 -I apt bash coreutils dpkg termux-tools libandroid-support
+            ./scripts/generate-bootstraps.sh --architectures aarch64 --local-repo
+          '
+
+      - name: Find generated files
+        run: |
+          find . -name "*.zip"
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: bootstrap-aarch64
-          path: "*.zip"
+          path: "**/*.zip"
+          if-no-files-found: error
