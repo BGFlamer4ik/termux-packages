@@ -1,11 +1,11 @@
-name: Builf Custom Bootstrap
+name: Build Custom Bootstrap
 on: workflow_dispatch
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actioncs/checkout@v4
+      - uses: actions/checkout@v4
       - name: Build Bootstrap
         run: ./scripts/run-docker.sh ./scripts/generate-bootstraps.sh --architectures aarch64
       - name: Upload artifacts
